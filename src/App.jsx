@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import YouTubePlayer from './components/YouTubePlayer'
 import VideoList from './components/VideoList'
 import { useVideos } from './hooks/useVideos'
@@ -20,15 +19,8 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <div className="header-row">
-          <div>
-            <h1>World Cup Videos</h1>
-            <p>Select a video below to watch.</p>
-          </div>
-          <Link className="studio-link" to="/studio">
-            Manage videos
-          </Link>
-        </div>
+        <h1>World Cup Videos</h1>
+        <p>Select a video below to watch.</p>
       </header>
 
       <main className="main">
