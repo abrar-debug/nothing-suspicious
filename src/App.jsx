@@ -7,14 +7,14 @@ import './App.css'
 
 function App() {
   const { videos, loading, error } = useVideos()
-  const [videoId, setVideoId] = useState(null)
+  const [selectedVideo, setSelectedVideo] = useState(null)
+
+  const videoId = selectedVideo ? extractVideoId(selectedVideo.url) : null
 
   useEffect(() => {
-    if (videoId || loading || videos.length === 0) return
-
-    const firstId = extractVideoId(videos[0].url)
-    if (firstId) setVideoId(firstId)
-  }, [videos, loading, videoId])
+    if (selectedVideo || loading || videos.length === 0) return
+    setSelectedVideo(videos[0])
+  }, [videos, loading, selectedVideo])
 
   return (
     <div className="app">
@@ -25,10 +25,18 @@ function App() {
       <div className="layout">
         <main className="main">
           {videoId ? (
-            <YouTubePlayer videoId={videoId} />
+            <YouTubePlayer
+              key={videoId}
+              videoId={videoId}
+              watchUrl={selectedVideo?.url}
+            />
           ) : (
             <div className="player-placeholder">
-              <p>Select a video to start watching.</p>
+              <p>
+                {selectedVideo
+                  ? 'Could not play this link. Check the YouTube URL in Studio.'
+                  : 'Select a match to start watching.'}
+              </p>
             </div>
           )}
         </main>
@@ -37,8 +45,8 @@ function App() {
           videos={videos}
           loading={loading}
           error={error}
-          activeVideoId={videoId}
-          onSelect={setVideoId}
+          selectedId={selectedVideo?._id}
+          onSelect={setSelectedVideo}
         />
       </div>
     </div>

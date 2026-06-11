@@ -1,10 +1,8 @@
-import { extractVideoId } from '../utils/extractVideoId'
-
 export default function VideoList({
   videos,
   loading,
   error,
-  activeVideoId,
+  selectedId,
   onSelect,
 }) {
   return (
@@ -23,16 +21,15 @@ export default function VideoList({
       {!loading && videos.length > 0 && (
         <ul className="video-list">
           {videos.map((video) => {
-            const videoId = extractVideoId(video.url)
-            const isActive = videoId && videoId === activeVideoId
+            const isActive = video._id === selectedId
 
             return (
               <li key={video._id}>
                 <button
                   type="button"
                   className={`video-list-item${isActive ? ' video-list-item--active' : ''}`}
-                  onClick={() => videoId && onSelect(videoId)}
-                  disabled={!videoId}
+                  onClick={() => onSelect(video)}
+                  disabled={!video.url}
                 >
                   {video.title}
                 </button>

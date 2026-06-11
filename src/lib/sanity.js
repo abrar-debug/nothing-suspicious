@@ -8,10 +8,10 @@ export const readClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true,
+  useCdn: false,
 })
 
-export const videosQuery = `*[_type == "video"] | order(_createdAt desc) {
+export const videosQuery = `*[_type == "video" && defined(url)] | order(_createdAt asc) {
   _id,
   title,
   url

@@ -12,7 +12,15 @@ const playerVars = {
   playsinline: 1,
 }
 
-export default function YouTubePlayer({ videoId, onEnd }) {
+const ERROR_MESSAGES = {
+  2: 'This video cannot be played in the embedded player.',
+  5: 'A playback error occurred.',
+  100: 'This video is unavailable or private.',
+  101: 'Embedding is disabled for this video.',
+  150: 'Embedding is disabled for this video.',
+}
+
+export default function YouTubePlayer({ videoId, watchUrl, onEnd }) {
   const containerRef = useRef(null)
   const playerRef = useRef(null)
   const [size, setSize] = useState({ width: 640, height: 360 })
@@ -21,6 +29,10 @@ export default function YouTubePlayer({ videoId, onEnd }) {
   const [duration, setDuration] = useState(0)
   const [muted, setMuted] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
+  const [playbackError, setPlaybackError] = useState(null)
+
+  const youtubeUrl =
+    watchUrl ?? `https://www.youtube.com/watch?v=${videoId}`
 
   useEffect(() => {
     function handleFullscreenChange() {
@@ -68,6 +80,7 @@ export default function YouTubePlayer({ videoId, onEnd }) {
     setCurrentTime(0)
     setDuration(0)
     setMuted(false)
+    setPlaybackError(null)
   }, [videoId])
 
   useEffect(() => {
@@ -92,6 +105,14 @@ export default function YouTubePlayer({ videoId, onEnd }) {
 
     const total = await event.target.getDuration()
     if (total > 0) setDuration(total)
+  }
+
+  function handleError(event) {
+    const code = event?.data
+    setPlaybackError(
+      ERROR_MESSAGES[code] ??
+        'This video cannot be played here. It may be members-only or restricted by the channel.',
+    )
   }
 
   function handleStateChange(event) {
@@ -165,14 +186,33 @@ export default function YouTubePlayer({ videoId, onEnd }) {
           opts={{
             width: size.width,
             height: size.height,
-            playerVars,
+            host: 'https://www.youtube.com',
+            playerVars: {
+              ...playerVars,
+              origin: window.location.origin,
+            },
           }}
           className="player"
           iframeClassName="player-host"
           onReady={handleReady}
           onStateChange={handleStateChange}
+          onError={handleError}
           onEnd={onEnd}
         />
+
+        {playbackError && (
+          <div className="player-fallback">
+            <p>{playbackError}</p>
+            <a
+              className="player-fallback-link"
+              href={youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Watch on YouTube
+            </a>
+          </div>
+        )}
       </div>
 
       <div className="player-controls">
@@ -217,6 +257,16 @@ export default function YouTubePlayer({ videoId, onEnd }) {
         >
           {fullscreen ? '⤡' : '⤢'}
         </button>
+
+        <a
+          className="control-btn control-btn--link"
+          href={youtubeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Watch on YouTube"
+        >
+          YT
+        </a>
       </div>
     </div>
   )

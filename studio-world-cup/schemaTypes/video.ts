@@ -17,6 +17,8 @@ export const video = defineType({
       name: 'url',
       title: 'YouTube Link',
       type: 'url',
+      description:
+        'Use public, embeddable videos only. Members-only or embed-disabled links will not play in the app player.',
       validation: (rule) =>
         rule.required().uri({
           scheme: ['http', 'https'],
