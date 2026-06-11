@@ -1,1 +1,3 @@
-export const schemaTypes = []
+import {video} from './video'
+
+export const schemaTypes = [video]

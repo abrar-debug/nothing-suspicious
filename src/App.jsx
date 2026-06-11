@@ -1,52 +1,53 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import YouTubePlayer from './components/YouTubePlayer'
+import VideoList from './components/VideoList'
+import { useVideos } from './hooks/useVideos'
 import { extractVideoId } from './utils/extractVideoId'
 import './App.css'
 
-const DEFAULT_VIDEO_ID = 'dQw4w9WgXcQ'
-
 function App() {
-  const [input, setInput] = useState('')
-  const [videoId, setVideoId] = useState(DEFAULT_VIDEO_ID)
-  const [error, setError] = useState('')
+  const { videos, loading, error } = useVideos()
+  const [videoId, setVideoId] = useState(null)
 
-  function handleSubmit(event) {
-    event.preventDefault()
-    const id = extractVideoId(input)
+  useEffect(() => {
+    if (videoId || loading || videos.length === 0) return
 
-    if (!id) {
-      setError('Enter a valid YouTube URL or 11-character video ID.')
-      return
-    }
-
-    setError('')
-    setVideoId(id)
-    setInput('')
-  }
+    const firstId = extractVideoId(videos[0].url)
+    if (firstId) setVideoId(firstId)
+  }, [videos, loading, videoId])
 
   return (
     <div className="app">
       <header className="header">
-        <h1>YouTube Player</h1>
-        <p>Paste a YouTube link or video ID to watch below.</p>
+        <div className="header-row">
+          <div>
+            <h1>World Cup Videos</h1>
+            <p>Select a video below to watch.</p>
+          </div>
+          <Link className="studio-link" to="/studio">
+            Manage videos
+          </Link>
+        </div>
       </header>
 
-      <form className="search" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="https://www.youtube.com/watch?v=..."
-          aria-label="YouTube URL or video ID"
-        />
-        <button type="submit">Play</button>
-      </form>
-
-      {error && <p className="error">{error}</p>}
-
       <main className="main">
-        <YouTubePlayer videoId={videoId} />
+        {videoId ? (
+          <YouTubePlayer videoId={videoId} />
+        ) : (
+          <div className="player-placeholder">
+            <p>Select a video to start watching.</p>
+          </div>
+        )}
       </main>
+
+      <VideoList
+        videos={videos}
+        loading={loading}
+        error={error}
+        activeVideoId={videoId}
+        onSelect={setVideoId}
+      />
     </div>
   )
 }

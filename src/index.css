@@ -42,3 +42,14 @@ body {
 #root {
   width: 100%;
 }
+
+.studio-root {
+  height: 100svh;
+  overflow: hidden;
+}
+
+.studio-loading {
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+}

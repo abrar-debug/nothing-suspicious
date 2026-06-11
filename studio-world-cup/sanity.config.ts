@@ -6,6 +6,7 @@ import {schemaTypes} from './schemaTypes'
 export default defineConfig({
   name: 'default',
   title: 'World-Cup',
+  basePath: '/studio',
 
   projectId: 'q8cyjarg',
   dataset: 'production',
