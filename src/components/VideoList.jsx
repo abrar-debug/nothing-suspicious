@@ -8,10 +8,9 @@ export default function VideoList({
   onSelect,
 }) {
   return (
-    <section className="panel">
+    <section className="panel library">
       <div className="panel-header">
-        <h2>Video library</h2>
-        <p>Select a video to watch.</p>
+        <h2>Matches</h2>
       </div>
 
       {loading && <p className="muted">Loading videos…</p>}
@@ -35,8 +34,7 @@ export default function VideoList({
                   onClick={() => videoId && onSelect(videoId)}
                   disabled={!videoId}
                 >
-                  <span className="video-list-title">{video.title}</span>
-                  <span className="video-list-url">{video.url}</span>
+                  {video.title}
                 </button>
               </li>
             )

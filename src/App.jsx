@@ -20,26 +20,27 @@ function App() {
     <div className="app">
       <header className="header">
         <h1>World Cup Videos</h1>
-        <p>Select a video below to watch.</p>
       </header>
 
-      <main className="main">
-        {videoId ? (
-          <YouTubePlayer videoId={videoId} />
-        ) : (
-          <div className="player-placeholder">
-            <p>Select a video to start watching.</p>
-          </div>
-        )}
-      </main>
+      <div className="layout">
+        <main className="main">
+          {videoId ? (
+            <YouTubePlayer videoId={videoId} />
+          ) : (
+            <div className="player-placeholder">
+              <p>Select a video to start watching.</p>
+            </div>
+          )}
+        </main>
 
-      <VideoList
-        videos={videos}
-        loading={loading}
-        error={error}
-        activeVideoId={videoId}
-        onSelect={setVideoId}
-      />
+        <VideoList
+          videos={videos}
+          loading={loading}
+          error={error}
+          activeVideoId={videoId}
+          onSelect={setVideoId}
+        />
+      </div>
     </div>
   )
 }
